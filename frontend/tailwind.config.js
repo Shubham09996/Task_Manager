@@ -17,6 +17,9 @@ export default {
         warning: "#eab308",
         muted: "#9ca3af",
       },
+      fontFamily: {
+        sans: ['Outfit', 'sans-serif'],
+      },
     },
   },
   plugins: [],
