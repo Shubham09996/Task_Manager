@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDroppable, DndContext, pointerWithin } from '@dnd-kit/core';
+import { useDroppable, DndContext, pointerWithin, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 
 const Column = ({ title, tasks, id, onTaskClick }) => {
@@ -39,8 +39,16 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
 const TaskBoard = ({ tasks, onDragEnd, onTaskClick }) => {
   const columns = ['Backlog', 'To do', 'In progress', 'In review', 'Done'];
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  );
+
   return (
-    <DndContext onDragEnd={onDragEnd} collisionDetection={pointerWithin}>
+    <DndContext onDragEnd={onDragEnd} collisionDetection={pointerWithin} sensors={sensors}>
       <div className="flex gap-6 overflow-x-auto pb-4 pt-2">
         {columns.map(col => (
           <Column 

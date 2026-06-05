@@ -1,8 +1,12 @@
 import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { Clock, MessageSquare, AlertCircle } from 'lucide-react';
+import { Clock, MessageSquare, AlertCircle, Edit2, Trash2 } from 'lucide-react';
+import api from '../../api/api';
+import { TaskContext } from '../../context/TaskContext';
+import { useContext } from 'react';
 
 const TaskCard = ({ task, onClick }) => {
+  const { deleteTask } = useContext(TaskContext);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task._id,
     data: { ...task }
@@ -26,11 +30,36 @@ const TaskCard = ({ task, onClick }) => {
       {...listeners} 
       {...attributes}
       onClick={() => onClick(task)}
-      className="glass-card p-4 bg-surface/80 hover:bg-surface transition-colors cursor-grab active:cursor-grabbing mb-3"
+      className="glass-card p-4 bg-surface/80 hover:bg-surface transition-colors cursor-grab active:cursor-grabbing mb-3 group"
     >
-      <div className="flex items-center gap-2 mb-2">
-        <span className={`w-2 h-2 rounded-full ${priorityColors[task.priority]}`}></span>
-        <span className="text-xs font-semibold text-muted uppercase tracking-wider">{task.priority}</span>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className={`w-2 h-2 rounded-full ${priorityColors[task.priority]}`}></span>
+          <span className="text-xs font-semibold text-muted uppercase tracking-wider">{task.priority}</span>
+        </div>
+        
+        {/* Explicit Action Buttons */}
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button 
+            onClick={(e) => { e.stopPropagation(); onClick(task); }} 
+            className="text-muted hover:text-white transition-colors"
+            title="Edit Task"
+          >
+            <Edit2 size={14} />
+          </button>
+          <button 
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              if(window.confirm('Are you sure you want to delete this task?')) {
+                deleteTask(task._id);
+              }
+            }} 
+            className="text-muted hover:text-danger transition-colors"
+            title="Delete Task"
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
       </div>
       
       <h4 className="text-white font-medium mb-3 leading-snug">{task.title}</h4>
