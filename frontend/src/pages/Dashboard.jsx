@@ -1,18 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { TaskContext } from '../context/TaskContext';
-import { CheckCircle, Clock, AlertTriangle, TrendingUp } from 'lucide-react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  AreaChart,
-  Area
-} from 'recharts';
+import { CheckCircle, Clock, AlertTriangle, TrendingUp, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -26,33 +16,7 @@ const Dashboard = () => {
   const inProgress = tasks.filter(t => t.status === 'In progress').length;
   const overdue = tasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'Done').length;
   
-  const completionRate = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
-
-  const last7Days = [...Array(7)].map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return d;
-  });
-
-  const data = last7Days.map(date => {
-    const dateStr = date.toISOString().split('T')[0];
-    const dayTasks = tasks.filter(t => new Date(t.createdAt).toISOString().split('T')[0] === dateStr);
-    const completedTasks = tasks.filter(t => t.status === 'Done' && new Date(t.updatedAt).toISOString().split('T')[0] === dateStr);
-    return {
-      name: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      created: dayTasks.length,
-      completed: completedTasks.length
-    };
-  });
-
-  const rateData = [...Array(4)].map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (3 - i) * 7);
-    const upToDateTasks = tasks.filter(t => new Date(t.createdAt) <= d);
-    const completedUpToDate = upToDateTasks.filter(t => t.status === 'Done');
-    const rate = upToDateTasks.length ? Math.round((completedUpToDate.length / upToDateTasks.length) * 100) : 0;
-    return { name: `W${i + 1}`, rate };
-  });
+  const recentTasks = tasks.slice(0, 5);
 
   if (loading) return <div className="text-white">Loading dashboard...</div>;
 
@@ -130,58 +94,38 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 col-span-2">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-white">Weekly productivity</h3>
-              <p className="text-sm text-muted">Tasks completed vs created — this week</p>
-            </div>
-            <div className="flex gap-4 text-xs font-medium">
-              <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-primary"></span> Completed</span>
-              <span className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-secondary"></span> Created</span>
-            </div>
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                <XAxis dataKey="name" stroke="#9ca3af" axisLine={false} tickLine={false} />
-                <YAxis stroke="#9ca3af" axisLine={false} tickLine={false} />
-                <Tooltip cursor={{fill: '#ffffff05'}} contentStyle={{backgroundColor: '#1a1a24', borderColor: '#ffffff10', borderRadius: '8px'}} />
-                <Bar dataKey="completed" fill="#a855f7" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="created" fill="#22d3ee" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Differentiated Content: Recent Tasks instead of Charts */}
+      <div className="glass-card p-6 border border-white/5">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-bold text-white">Recent Tasks</h3>
+          <Link to="/dashboard/tasks" className="text-sm font-medium text-primary hover:text-accent flex items-center gap-1 transition-colors">
+            View all tasks <ArrowRight size={14} />
+          </Link>
         </div>
-
-        <div className="glass-card p-6 flex flex-col relative overflow-hidden">
-          <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none"></div>
-          <div>
-            <h3 className="text-lg font-bold text-white">Completion rate</h3>
-            <p className="text-sm text-muted">Rolling 30-day window</p>
+        
+        {recentTasks.length === 0 ? (
+          <div className="text-muted text-sm py-4">No tasks found. Create one to get started!</div>
+        ) : (
+          <div className="space-y-3">
+            {recentTasks.map(task => (
+              <div key={task._id} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className={`w-2 h-2 rounded-full ${task.priority === 'High' ? 'bg-danger' : task.priority === 'Medium' ? 'bg-warning' : 'bg-secondary'}`}></div>
+                  <div>
+                    <h4 className="text-white font-medium text-sm">{task.title}</h4>
+                    <span className="text-xs text-muted">{task.status}</span>
+                  </div>
+                </div>
+                {task.dueDate && (
+                  <div className="text-xs text-muted flex items-center gap-1">
+                    <Clock size={12} />
+                    {new Date(task.dueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-          <div className="flex-1 flex flex-col justify-center my-4">
-            <div className="flex items-baseline gap-1">
-              <span className="text-5xl font-bold text-white">{completionRate}</span>
-              <span className="text-xl text-muted">%</span>
-            </div>
-          </div>
-          <div className="h-24 w-full mt-auto">
-             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={rateData}>
-                <defs>
-                  <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <Area type="monotone" dataKey="rate" stroke="#a855f7" strokeWidth={3} fillOpacity={1} fill="url(#colorRate)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
