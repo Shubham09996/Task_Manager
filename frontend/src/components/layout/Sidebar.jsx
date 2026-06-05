@@ -13,11 +13,11 @@ const Sidebar = () => {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: 'Tasks', path: '/tasks', icon: <CheckSquare size={20} /> },
-    { name: 'Analytics', path: '/analytics', icon: <BarChart2 size={20} /> },
-    { name: 'Activity', path: '/activity', icon: <Activity size={20} /> },
-    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
+    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { name: 'Tasks', path: '/dashboard/tasks', icon: <CheckSquare size={20} /> },
+    { name: 'Analytics', path: '/dashboard/analytics', icon: <BarChart2 size={20} /> },
+    { name: 'Activity', path: '/dashboard/activity', icon: <Activity size={20} /> },
+    { name: 'Settings', path: '/dashboard/settings', icon: <Settings size={20} /> },
   ];
 
   if (!user) return null;
@@ -32,7 +32,7 @@ const Sidebar = () => {
       </div>
 
       <div className="px-4 mb-4">
-        <button className="w-full bg-gradient-to-r from-primary/90 to-accent/90 hover:from-primary hover:to-accent text-white py-2.5 rounded-xl font-medium shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2" onClick={() => navigate('/tasks?new=true')}>
+        <button className="w-full bg-gradient-to-r from-primary/90 to-accent/90 hover:from-primary hover:to-accent text-white py-2.5 rounded-xl font-medium shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2" onClick={() => navigate('/dashboard/tasks?new=true')}>
           <span className="text-lg leading-none">+</span> New task
         </button>
       </div>

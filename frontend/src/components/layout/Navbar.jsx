@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Search, Bell, Sun } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
@@ -25,9 +25,6 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-6 ml-4">
-        <button className="text-muted hover:text-white transition-colors">
-          <Sun size={20} />
-        </button>
         <button className="text-muted hover:text-white transition-colors relative">
           <Bell size={20} />
           <span className="absolute top-0 right-0 w-2 h-2 bg-danger rounded-full"></span>

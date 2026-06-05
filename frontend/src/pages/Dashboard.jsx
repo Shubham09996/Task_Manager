@@ -28,22 +28,31 @@ const Dashboard = () => {
   
   const completionRate = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
 
-  const data = [
-    { name: 'Mon', completed: 4, created: 6 },
-    { name: 'Tue', completed: 7, created: 5 },
-    { name: 'Wed', completed: 10, created: 8 },
-    { name: 'Thu', completed: 6, created: 9 },
-    { name: 'Fri', completed: 12, created: 7 },
-    { name: 'Sat', completed: 3, created: 2 },
-    { name: 'Sun', completed: 2, created: 1 },
-  ];
+  const last7Days = [...Array(7)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    return d;
+  });
 
-  const rateData = [
-    { name: 'W1', rate: 45 },
-    { name: 'W2', rate: 52 },
-    { name: 'W3', rate: 68 },
-    { name: 'W4', rate: completionRate },
-  ];
+  const data = last7Days.map(date => {
+    const dateStr = date.toISOString().split('T')[0];
+    const dayTasks = tasks.filter(t => new Date(t.createdAt).toISOString().split('T')[0] === dateStr);
+    const completedTasks = tasks.filter(t => t.status === 'Done' && new Date(t.updatedAt).toISOString().split('T')[0] === dateStr);
+    return {
+      name: date.toLocaleDateString('en-US', { weekday: 'short' }),
+      created: dayTasks.length,
+      completed: completedTasks.length
+    };
+  });
+
+  const rateData = [...Array(4)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (3 - i) * 7);
+    const upToDateTasks = tasks.filter(t => new Date(t.createdAt) <= d);
+    const completedUpToDate = upToDateTasks.filter(t => t.status === 'Done');
+    const rate = upToDateTasks.length ? Math.round((completedUpToDate.length / upToDateTasks.length) * 100) : 0;
+    return { name: `W${i + 1}`, rate };
+  });
 
   if (loading) return <div className="text-white">Loading dashboard...</div>;
 
