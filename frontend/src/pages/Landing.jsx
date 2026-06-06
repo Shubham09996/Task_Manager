@@ -24,14 +24,14 @@ const Landing = () => {
       {/* Top Navbar */}
       <nav className="fixed w-full top-0 z-50 bg-[#0B0C10]/80 backdrop-blur-lg border-b border-white/5">
         <div className="container mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9b6cf8] to-[#c58dfa] flex items-center justify-center font-bold text-white text-sm">
               F
             </div>
             <span className="text-xl font-bold tracking-tight text-white">
               Flow
             </span>
-          </div>
+          </Link>
         <div className="flex items-center gap-8">
           <a href="#features" className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden md:block">Features</a>
           <a href="#customers" className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden md:block">Customers</a>
