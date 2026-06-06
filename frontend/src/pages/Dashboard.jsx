@@ -75,24 +75,24 @@ const Dashboard = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div className="glass-card p-8 bg-gradient-to-br from-surface to-background relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-4">
-          <div className="flex gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-full px-4 py-1.5 flex items-center gap-2 text-sm text-white">
+        <div className="relative md:absolute md:top-0 md:right-0 md:p-4 mb-6 md:mb-0">
+          <div className="flex flex-wrap md:flex-nowrap gap-2 md:gap-4">
+            <div className="bg-white/5 border border-white/10 rounded-full px-3 md:px-4 py-1.5 flex items-center gap-2 text-xs md:text-sm text-white">
               <span className={`w-2 h-2 rounded-full ${streak > 0 ? 'bg-primary animate-pulse' : 'bg-muted'}`}></span>
               {streak} {streak === 1 ? 'day' : 'days'} streak
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-sm text-white flex items-center gap-2">
+            <div className="bg-white/5 border border-white/10 rounded-full px-3 md:px-4 py-1.5 text-xs md:text-sm text-white flex items-center gap-2">
               <span className="text-muted">Focus Score</span> 
               <span className={`font-semibold ${focusScore >= 80 ? 'text-success' : focusScore >= 50 ? 'text-secondary' : 'text-danger'}`}>{focusScore}</span>
             </div>
           </div>
         </div>
         
-        <h1 className="text-4xl font-bold text-white mb-3">{getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{user?.name?.split(' ')[0]}</span>.</h1>
-        <p className="text-muted text-lg">You completed <span className="text-white font-medium">{completed}</span> tasks this week. You have <span className="text-danger font-medium">{overdue}</span> overdue — let's clear those first.</p>
+        <h1 className="text-2xl md:text-4xl font-bold text-white mb-3">{getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{user?.name?.split(' ')[0]}</span>.</h1>
+        <p className="text-muted text-base md:text-lg">You completed <span className="text-white font-medium">{completed}</span> tasks this week. You have <span className="text-danger font-medium">{overdue}</span> overdue — let's clear those first.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="glass-card p-6 flex flex-col justify-between h-36">
           <div className="flex justify-between items-start">
             <p className="text-muted text-xs font-semibold tracking-wider uppercase">Total Tasks</p>

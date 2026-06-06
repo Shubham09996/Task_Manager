@@ -71,8 +71,8 @@ const Analytics = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 col-span-2 border border-white/5">
-          <div className="flex justify-between items-center mb-6">
+        <div className="glass-card p-4 sm:p-6 md:col-span-2 border border-white/5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
             <div>
               <h3 className="text-lg font-bold text-white">Weekly productivity</h3>
               <p className="text-sm text-muted">Tasks completed vs created — this week</p>
@@ -96,7 +96,7 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="glass-card p-6 border border-white/5 flex flex-col items-center justify-center">
+        <div className="glass-card p-4 sm:p-6 border border-white/5 flex flex-col items-center justify-center">
           <h3 className="text-lg font-bold text-white mb-6 w-full text-left">Task Distribution</h3>
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -122,13 +122,13 @@ const Analytics = () => {
             {statusData.map((entry, idx) => (
               <div key={idx} className="flex items-center gap-1.5 text-xs text-muted">
                 <span className="w-2 h-2 rounded-full" style={{backgroundColor: entry.color}}></span>
-                {entry.name}
+                <span>{entry.name} <span className="font-semibold text-white ml-0.5">{entry.value}</span></span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="glass-card p-6 col-span-3 border border-white/5 flex flex-col relative overflow-hidden">
+        <div className="glass-card p-4 sm:p-6 md:col-span-3 border border-white/5 flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none"></div>
           <div className="mb-6">
             <h3 className="text-lg font-bold text-white">Completion rate trend</h3>

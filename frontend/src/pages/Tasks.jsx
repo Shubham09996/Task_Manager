@@ -136,20 +136,20 @@ const Tasks = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4 md:gap-0">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Tasks</h1>
           <p className="text-muted">Plan, prioritize and ship — across {tasks.length} active items.</p>
         </div>
-        <div className="flex gap-3">
-          <button onClick={() => openModal()} className="btn-primary rounded-xl text-sm px-5">
+        <div className="flex gap-3 w-full md:w-auto">
+          <button onClick={() => openModal()} className="btn-primary rounded-xl text-sm px-5 w-full md:w-auto flex justify-center">
             <Plus size={16} /> New task
           </button>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 mb-6">
-        <div className="relative w-64">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6">
+        <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" size={16} />
           <input 
             type="text" 
@@ -160,11 +160,11 @@ const Tasks = () => {
           />
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <select 
             value={filters.priority}
             onChange={(e) => setFilters({...filters, priority: e.target.value})}
-            className="bg-white/5 border border-white/5 text-white text-sm rounded-full pl-4 pr-10 py-1.5 focus:outline-none appearance-none hover:bg-white/10 transition-colors cursor-pointer"
+            className="w-full bg-white/5 border border-white/5 text-white text-sm rounded-full pl-4 pr-10 py-1.5 focus:outline-none appearance-none hover:bg-white/10 transition-colors cursor-pointer"
           >
             <option className="bg-[#111218] text-white" value="">All Priorities</option>
             <option className="bg-[#111218] text-white" value="High">High</option>
@@ -187,7 +187,7 @@ const Tasks = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-lg p-6 relative">
+          <div className="glass-card w-[95%] md:w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
             <button onClick={closeModal} className="absolute top-4 right-4 text-muted hover:text-white transition-colors">
               <X size={20} />
             </button>
@@ -216,7 +216,7 @@ const Tasks = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="relative">
                   <label className="block text-sm text-muted mb-1">Status</label>
                   <select 
@@ -246,7 +246,7 @@ const Tasks = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-muted mb-1">Due Date</label>
                   <input 

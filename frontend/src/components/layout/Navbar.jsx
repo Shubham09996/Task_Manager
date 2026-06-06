@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
-import { Search, Bell, ChevronDown, User, Settings as SettingsIcon, LogOut, Sparkles } from 'lucide-react';
+import { Search, Bell, ChevronDown, User, Settings as SettingsIcon, LogOut, Sparkles, Menu, X } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { TaskContext } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ const Navbar = () => {
   const { tasks } = useContext(TaskContext) || { tasks: [] };
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
   const notifRef = useRef(null);
@@ -70,9 +71,16 @@ const Navbar = () => {
   if (!user) return null;
 
   return (
-    <div className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-surface/30 backdrop-blur-md sticky top-0 z-10">
-      <div className="flex-1 max-w-xl">
-        <div className="relative group">
+    <>
+      <div className="h-16 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-surface/30 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center gap-2 md:gap-4 flex-1 max-w-xl">
+        <button 
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="md:hidden text-muted hover:text-white shrink-0"
+        >
+          <Menu size={24} />
+        </button>
+        <div className="relative group flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-[#c084fc] transition-colors" size={18} />
           <input 
             ref={searchInputRef}
@@ -207,6 +215,44 @@ const Navbar = () => {
         </div>
       </div>
     </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, x: -100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            className="fixed inset-0 z-[100] bg-[#111218] flex flex-col md:hidden"
+          >
+            <div className="h-16 px-4 flex justify-between items-center border-b border-white/5 bg-surface/30">
+              <div 
+                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => { setIsMobileMenuOpen(false); navigate('/'); }}
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#9b6cf8] to-[#c58dfa] flex items-center justify-center font-bold text-white shadow-lg">F</div>
+                <span className="text-xl font-semibold text-white">Flow</span>
+              </div>
+              <button onClick={() => setIsMobileMenuOpen(false)} className="text-muted hover:text-white p-2">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2 bg-background">
+              <button onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard'); }} className="w-full text-left px-4 py-3 rounded-xl text-white hover:bg-white/5 font-medium">Dashboard</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard/tasks'); }} className="w-full text-left px-4 py-3 rounded-xl text-white hover:bg-white/5 font-medium">Tasks</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard/analytics'); }} className="w-full text-left px-4 py-3 rounded-xl text-white hover:bg-white/5 font-medium">Analytics</button>
+              <button onClick={() => { setIsMobileMenuOpen(false); navigate('/dashboard/settings'); }} className="w-full text-left px-4 py-3 rounded-xl text-white hover:bg-white/5 font-medium">Settings</button>
+              
+              <div className="pt-6 mt-6 border-t border-white/10">
+                <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-danger hover:bg-danger/10 font-medium">
+                  <LogOut size={20} /> Logout
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

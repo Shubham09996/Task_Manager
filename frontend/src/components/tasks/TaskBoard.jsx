@@ -15,7 +15,7 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
   };
 
   return (
-    <div className="flex flex-col h-full min-w-[300px] max-w-[300px]">
+    <div className="flex flex-col h-full min-w-[280px] md:min-w-[300px] max-w-[280px] md:max-w-[300px] shrink-0">
       <div className="flex items-center gap-2 mb-4 px-1">
         <span className={`w-2 h-2 rounded-full bg-current ${columnColors[title] || 'text-white'}`}></span>
         <h3 className="font-semibold text-white">{title}</h3>
@@ -54,7 +54,7 @@ const TaskBoard = ({ tasks, onDragEnd, onTaskClick }) => {
 
   return (
     <DndContext onDragEnd={onDragEnd} collisionDetection={pointerWithin} sensors={sensors}>
-      <div className="flex gap-6 overflow-x-auto h-full pb-4 pt-2">
+      <div className="flex gap-4 md:gap-6 overflow-x-auto h-full pb-4 pt-2 custom-scrollbar pr-4 md:pr-0">
         {columns.map(col => (
           <Column 
             key={col} 

@@ -23,7 +23,7 @@ const Sidebar = () => {
   if (!user) return null;
 
   return (
-    <div className={`bg-background border-r border-white/10 h-screen flex flex-col pt-6 pb-4 transition-all duration-300 relative ${isCollapsed ? 'w-20' : 'w-64'}`}>
+    <div className={`bg-background border-r border-white/10 h-screen hidden md:flex flex-col pt-6 pb-4 transition-all duration-300 relative ${isCollapsed ? 'w-20' : 'w-64'}`}>
       
       {/* Toggle Button */}
       <button 

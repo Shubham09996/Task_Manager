@@ -95,12 +95,12 @@ const Login = () => {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-12 relative min-h-screen py-10">
          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#111218] via-[#0B0C10] to-[#0B0C10] lg:hidden z-0"></div>
          
-         <div className="w-full max-w-md relative z-10">
+         <div className="w-full max-w-md relative z-10 bg-[#16171d]/80 lg:bg-transparent p-6 sm:p-10 lg:p-0 rounded-3xl border border-white/10 lg:border-transparent shadow-2xl lg:shadow-none backdrop-blur-xl lg:backdrop-blur-none mt-4 lg:mt-0">
            {/* Mobile header (hidden on lg) */}
-           <div className="lg:hidden flex justify-between items-center mb-12">
+           <div className="lg:hidden flex justify-between items-center mb-6">
              <div className="flex items-center gap-3">
                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9b6cf8] to-[#c58dfa] flex items-center justify-center font-bold text-white text-sm">
                  F
@@ -110,6 +110,18 @@ const Login = () => {
              <Link to="/" className="text-xs font-medium text-gray-400 hover:text-white transition-colors">
                Back to website
              </Link>
+           </div>
+
+           {/* Mobile Lottie */}
+           <div className="lg:hidden flex justify-center mb-8">
+             <div className="w-full max-w-[200px] aspect-[4/3] bg-[#000000]/40 rounded-2xl flex items-center justify-center overflow-hidden border border-white/5 shadow-inner">
+               <DotLottieReact
+                  src="https://lottie.host/bdcc4ed2-2d72-4a32-914e-cf8a860a415a/gyKp6Zqr5U.lottie"
+                  loop
+                  autoplay
+                  className="w-full h-full opacity-90 mix-blend-screen"
+                />
+             </div>
            </div>
 
            <motion.div
