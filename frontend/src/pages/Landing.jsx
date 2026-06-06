@@ -35,7 +35,6 @@ const Landing = () => {
         <div className="flex items-center gap-8">
           <a href="#features" className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden md:block">Features</a>
           <a href="#customers" className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden md:block">Customers</a>
-          <a href="#pricing" className="text-sm font-semibold text-gray-400 hover:text-white transition-colors hidden md:block">Pricing</a>
           {user ? (
             <Link to="/dashboard" className="text-sm font-semibold text-white hover:text-[#c084fc] transition-colors flex items-center gap-2">
               Dashboard <ArrowRight size={16} />
@@ -60,7 +59,7 @@ const Landing = () => {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/10 mb-8 cursor-pointer hover:bg-white/[0.05] transition-colors"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-          <span className="text-xs font-medium text-gray-300">New &middot; Flow AI now drafts your entire sprint</span>
+          <span className="text-xs font-medium text-gray-300">New &middot; Flow now automates your entire sprint</span>
           <ArrowRight size={12} className="text-gray-400 ml-1" />
         </motion.div>
         
@@ -97,9 +96,6 @@ const Landing = () => {
           <Link to="/register" className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#9b6cf8] to-[#c58dfa] text-white font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(155,108,248,0.3)]">
             Start for free <ArrowRight size={18} />
           </Link>
-          <button className="px-8 py-3.5 rounded-xl bg-[#181920] border border-[#2a2b32] text-white font-semibold flex items-center gap-2 hover:bg-[#22232d] transition-colors w-full sm:w-auto justify-center">
-            <Play size={18} fill="currentColor" /> Watch the demo
-          </button>
         </motion.div>
 
         <motion.div 
@@ -222,7 +218,7 @@ const Landing = () => {
                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c084fc]/20 to-[#c084fc]/5 flex items-center justify-center mb-6 text-[#c084fc] border border-[#c084fc]/20">
                  <Sparkles size={24} />
                </div>
-               <h3 className="text-xl font-bold text-white mb-3 tracking-tight">AI sprint drafts</h3>
+               <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Automated sprint drafts</h3>
                <p className="text-gray-400 text-sm leading-relaxed">Describe an outcome. Flow generates tasks, estimates, and owners.</p>
             </div>
             <div className="rounded-3xl bg-[#111218] border border-white/5 p-8 flex-1 group">
@@ -286,7 +282,7 @@ const Landing = () => {
           {[
             { name: "Anya Petrova", title: "Head of Product, Mercury", quote: "\"Flow is the first task tool our designers and engineers both love. The interface is a joy.\"", initials: "AP", color: "bg-[#818cf8]" },
             { name: "Daniel Reeves", title: "Eng Manager, Linear", quote: "\"We replaced four tools with Flow. Sprint planning is now 20 minutes, not two hours.\"", initials: "DR", color: "bg-[#06b6d4]" },
-            { name: "Maya Chen", title: "Founder, Sundial", quote: "\"It's stupid fast. Keyboard shortcuts, AI sprint drafts, gorgeous analytics. This is the future.\"", initials: "MC", color: "bg-[#f472b6]" }
+            { name: "Maya Chen", title: "Founder, Sundial", quote: "\"It's stupid fast. Keyboard shortcuts, automated sprint drafts, gorgeous analytics. This is the future.\"", initials: "MC", color: "bg-[#f472b6]" }
           ].map((t, i) => (
             <div key={i} className="rounded-3xl bg-[#111218] border border-white/5 p-8 flex flex-col">
               <Quote size={20} className="text-[#c084fc] mb-6 opacity-50" />
@@ -334,9 +330,9 @@ const Landing = () => {
               <Link to="/register" className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#9b6cf8] to-[#c58dfa] text-white font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity">
                 Start for free <ArrowRight size={18} />
               </Link>
-              <button className="px-8 py-3.5 rounded-xl bg-[#181920] border border-[#2a2b32] text-white font-semibold hover:bg-[#22232d] transition-colors">
+              <Link to="/login" className="px-8 py-3.5 rounded-xl bg-[#181920] border border-[#2a2b32] text-white font-semibold flex items-center justify-center hover:bg-[#22232d] transition-colors w-full sm:w-auto">
                 Explore the app
-              </button>
+              </Link>
             </div>
           </div>
         </div>

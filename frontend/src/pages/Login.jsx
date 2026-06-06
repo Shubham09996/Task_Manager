@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { ArrowLeft, Sparkles, Check } from 'lucide-react';
+import { ArrowLeft, Sparkles, Check, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -148,19 +149,28 @@ const Login = () => {
                  />
                </div>
                <div>
-                 <div className="flex items-center justify-between mb-2">
-                   <label className="block text-sm font-medium text-gray-300">Password</label>
-                   <a href="#" className="text-xs font-medium text-[#c084fc] hover:text-[#d8b4fe] transition-colors">Forgot password?</a>
-                 </div>
-                 <input 
-                   type="password" 
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}
-                   className="w-full bg-[#16171d] border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c084fc]/50 focus:border-[#c084fc] transition-all"
-                   placeholder="••••••••"
-                   required
-                 />
-               </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-300">Password</label>
+                    <a href="#" className="text-xs font-medium text-[#c084fc] hover:text-[#d8b4fe] transition-colors">Forgot password?</a>
+                  </div>
+                  <div className="relative">
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-[#16171d] border border-white/10 rounded-xl px-4 py-3.5 pr-12 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c084fc]/50 focus:border-[#c084fc] transition-all"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
                
                <button 
                  type="submit" 

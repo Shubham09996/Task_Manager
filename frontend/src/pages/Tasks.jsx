@@ -110,10 +110,6 @@ const Tasks = () => {
           <p className="text-muted">Plan, prioritize and ship — across {tasks.length} active items.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
-            <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center text-[10px]">✨</span>
-            AI suggestions
-          </button>
           <button onClick={() => openModal()} className="btn-primary rounded-xl text-sm px-5">
             <Plus size={16} /> New task
           </button>
