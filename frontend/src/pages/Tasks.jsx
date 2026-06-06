@@ -106,6 +106,12 @@ const Tasks = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.title.trim() || !formData.description.trim() || !formData.dueDate || !formData.dueTime) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     if (editingTask) {
       await updateTask(editingTask._id, formData);
     } else {
@@ -177,29 +183,7 @@ const Tasks = () => {
         )}
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex items-center justify-between mt-6 bg-white/5 border border-white/5 rounded-xl px-4 py-3">
-        <div className="text-sm text-muted">
-          Showing <span className="text-white">{tasks.length}</span> of <span className="text-white">{pagination.total}</span> tasks
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            disabled={pagination.page <= 1}
-            onClick={() => setFilters({ ...filters, page: pagination.page - 1 })}
-            className="px-3 py-1 text-sm bg-white/5 border border-white/10 rounded hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors"
-          >
-            Previous
-          </button>
-          <span className="text-sm text-muted px-2">Page {pagination.page} of {pagination.pages || 1}</span>
-          <button 
-            disabled={pagination.page >= pagination.pages}
-            onClick={() => setFilters({ ...filters, page: pagination.page + 1 })}
-            className="px-3 py-1 text-sm bg-white/5 border border-white/10 rounded hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors"
-          >
-            Next
-          </button>
-        </div>
-      </div>
+
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -228,6 +212,7 @@ const Tasks = () => {
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   className="input-field min-h-[100px] resize-none"
+                  required
                 />
               </div>
 
@@ -270,6 +255,7 @@ const Tasks = () => {
                     onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
                     className="input-field bg-surface text-white w-full"
                     style={{colorScheme: 'dark'}}
+                    required
                   />
                 </div>
                 <div>
@@ -280,6 +266,7 @@ const Tasks = () => {
                     onChange={(e) => setFormData({...formData, dueTime: e.target.value})}
                     className="input-field bg-surface text-white w-full"
                     style={{colorScheme: 'dark'}}
+                    required
                   />
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDroppable, DndContext, pointerWithin, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { useDroppable, DndContext, pointerWithin, useSensor, useSensors, PointerSensor, TouchSensor } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 
 const Column = ({ title, tasks, id, onTaskClick }) => {
@@ -15,7 +15,7 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
   };
 
   return (
-    <div className="flex flex-col min-w-[300px] max-w-[300px]">
+    <div className="flex flex-col h-full min-w-[300px] max-w-[300px]">
       <div className="flex items-center gap-2 mb-4 px-1">
         <span className={`w-2 h-2 rounded-full bg-current ${columnColors[title] || 'text-white'}`}></span>
         <h3 className="font-semibold text-white">{title}</h3>
@@ -25,7 +25,7 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
       
       <div 
         ref={setNodeRef} 
-        className="flex-1 bg-white/5 rounded-2xl p-3 min-h-[150px] border border-white/5 transition-colors"
+        className="flex-1 overflow-y-auto bg-white/5 rounded-2xl p-3 min-h-[150px] border border-white/5 transition-colors"
       >
         {tasks.map(task => (
           <TaskCard key={task._id} task={task} onClick={onTaskClick} />
@@ -43,12 +43,18 @@ const TaskBoard = ({ tasks, onDragEnd, onTaskClick }) => {
       activationConstraint: {
         distance: 5,
       },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
     })
   );
 
   return (
     <DndContext onDragEnd={onDragEnd} collisionDetection={pointerWithin} sensors={sensors}>
-      <div className="flex gap-6 overflow-x-auto pb-4 pt-2">
+      <div className="flex gap-6 overflow-x-auto h-full pb-4 pt-2">
         {columns.map(col => (
           <Column 
             key={col} 
