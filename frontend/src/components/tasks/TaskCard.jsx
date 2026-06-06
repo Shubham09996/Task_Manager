@@ -5,9 +5,11 @@ import { Clock, MessageSquare, AlertCircle, Edit2, Trash2, CheckCircle } from 'l
 import api from '../../api/api';
 import { TaskContext } from '../../context/TaskContext';
 import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const TaskCard = ({ task, onClick }) => {
   const { deleteTask, updateTaskStatus } = useContext(TaskContext);
+  const { user } = useContext(AuthContext);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task._id,
     data: { ...task }
@@ -102,8 +104,8 @@ const TaskCard = ({ task, onClick }) => {
             </div>
           )}
         </div>
-        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-secondary to-primary flex items-center justify-center font-bold text-[10px] text-white">
-          A
+        <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-secondary to-primary flex items-center justify-center font-bold text-[10px] text-white uppercase" title={user?.name || 'Assignee'}>
+          {user?.name ? user.name.charAt(0) : 'U'}
         </div>
       </div>
     </div>

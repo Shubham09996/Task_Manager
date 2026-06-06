@@ -63,6 +63,11 @@ const Dashboard = () => {
     return 'Good evening';
   };
 
+  const now = new Date();
+  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const tasksThisWeek = tasks.filter(t => new Date(t.createdAt) >= oneWeekAgo).length;
+  const completedThisWeek = tasks.filter(t => t.status === 'Done' && new Date(t.updatedAt) >= oneWeekAgo).length;
+
   const recentTasks = tasks.slice(0, 5);
 
   if (loading) return <div className="text-white">Loading dashboard...</div>;
@@ -97,7 +102,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h3 className="text-3xl font-bold text-white">{tasks.length}</h3>
-            <p className="text-success text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} /> +12% vs last week</p>
+            <p className="text-muted text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} className="text-success" /> +{tasksThisWeek} this week</p>
           </div>
         </div>
         
@@ -110,7 +115,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h3 className="text-3xl font-bold text-white">{completed}</h3>
-            <p className="text-success text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} /> +24% vs last week</p>
+            <p className="text-muted text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} className="text-success" /> +{completedThisWeek} this week</p>
           </div>
         </div>
 
@@ -123,7 +128,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h3 className="text-3xl font-bold text-white">{inProgress}</h3>
-            <p className="text-danger text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} className="rotate-180" /> -4% vs last week</p>
+            <p className="text-muted text-xs flex items-center gap-1 mt-1"><Clock size={12} className="text-secondary" /> Active right now</p>
           </div>
         </div>
 
@@ -136,7 +141,7 @@ const Dashboard = () => {
           </div>
           <div>
             <h3 className="text-3xl font-bold text-white">{overdue}</h3>
-            <p className="text-danger text-xs flex items-center gap-1 mt-1"><TrendingUp size={12} className="rotate-180" /> -32% vs last week</p>
+            <p className="text-muted text-xs flex items-center gap-1 mt-1"><AlertTriangle size={12} className="text-danger" /> Needs attention</p>
           </div>
         </div>
       </div>
