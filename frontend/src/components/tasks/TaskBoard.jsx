@@ -11,7 +11,6 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
     'Backlog': 'text-muted',
     'To do': 'text-secondary',
     'In progress': 'text-primary',
-    'In review': 'text-warning',
     'Done': 'text-success'
   };
 
@@ -37,7 +36,7 @@ const Column = ({ title, tasks, id, onTaskClick }) => {
 };
 
 const TaskBoard = ({ tasks, onDragEnd, onTaskClick }) => {
-  const columns = ['Backlog', 'To do', 'In progress', 'In review', 'Done'];
+  const columns = ['Backlog', 'To do', 'In progress', 'Done'];
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

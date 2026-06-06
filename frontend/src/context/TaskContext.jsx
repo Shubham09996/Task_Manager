@@ -1,5 +1,6 @@
 import React, { createContext, useState, useCallback } from 'react';
 import api from '../api/api';
+import toast from 'react-hot-toast';
 
 export const TaskContext = createContext();
 
@@ -27,8 +28,10 @@ export const TaskProvider = ({ children }) => {
     try {
       const { data } = await api.post('/tasks', taskData);
       setTasks(prev => [data, ...prev]);
+      toast.success('Task created successfully');
       return { success: true, data };
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to create task');
       return { success: false, message: error.response?.data?.message || 'Failed to create task' };
     }
   };
@@ -37,8 +40,10 @@ export const TaskProvider = ({ children }) => {
     try {
       const { data } = await api.put(`/tasks/${id}`, taskData);
       setTasks(prev => prev.map(t => t._id === id ? data : t));
+      toast.success('Task updated');
       return { success: true };
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update task');
       return { success: false, message: error.response?.data?.message || 'Failed to update task' };
     }
   };
@@ -47,8 +52,10 @@ export const TaskProvider = ({ children }) => {
     try {
       const { data } = await api.patch(`/tasks/${id}/status`, { status });
       setTasks(prev => prev.map(t => t._id === id ? data : t));
+      toast.success(`Task moved to ${status}`);
       return { success: true };
     } catch (error) {
+      toast.error('Failed to update status');
       return { success: false };
     }
   };
@@ -57,8 +64,10 @@ export const TaskProvider = ({ children }) => {
     try {
       await api.delete(`/tasks/${id}`);
       setTasks(prev => prev.filter(t => t._id !== id));
+      toast.success('Task deleted');
       return { success: true };
     } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete task');
       return { success: false, message: error.response?.data?.message || 'Failed to delete task' };
     }
   };

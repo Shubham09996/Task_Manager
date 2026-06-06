@@ -1,13 +1,19 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Search, Bell, ChevronDown, User, Settings as SettingsIcon, LogOut, Sparkles } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
+import { TaskContext } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
+  const { tasks } = useContext(TaskContext) || { tasks: [] };
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
+  const notifRef = useRef(null);
+  const searchInputRef = useRef(null);
   const navigate = useNavigate();
 
   // Close dropdown on click outside
@@ -16,15 +22,50 @@ const Navbar = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsProfileOpen(false);
       }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setIsNotifOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Focus search on Ctrl+K or Cmd+K
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/dashboard/tasks?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+      searchInputRef.current?.blur();
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  // Compute notifications
+  const overdueTasks = tasks ? tasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'Done') : [];
+  const todayTasks = tasks ? tasks.filter(t => {
+    if (!t.dueDate || t.status === 'Done') return false;
+    return new Date(t.dueDate).toDateString() === new Date().toDateString();
+  }) : [];
+  
+  const notifications = [
+    ...overdueTasks.map(t => ({ id: t._id, type: 'overdue', title: 'Overdue Task', message: t.title })),
+    ...todayTasks.map(t => ({ id: t._id, type: 'today', title: 'Due Today', message: t.title }))
+  ];
 
   if (!user) return null;
 
@@ -34,7 +75,11 @@ const Navbar = () => {
         <div className="relative group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-[#c084fc] transition-colors" size={18} />
           <input 
+            ref={searchInputRef}
             type="text" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
             placeholder="Search tasks, projects, people..." 
             className="w-full bg-[#111218]/50 border border-white/5 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-muted focus:outline-none focus:ring-1 focus:ring-[#c084fc]/50 focus:bg-[#111218] transition-all"
           />
@@ -46,10 +91,53 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-6 ml-4">
-        <button className="text-muted hover:text-white transition-colors relative">
-          <Bell size={20} />
-          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#ef4444] rounded-full ring-2 ring-[#0B0C10]"></span>
-        </button>
+        <div className="relative" ref={notifRef}>
+          <button 
+            onClick={() => setIsNotifOpen(!isNotifOpen)}
+            className="text-muted hover:text-white transition-colors relative block"
+          >
+            <Bell size={20} />
+            {notifications.length > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-danger rounded-full ring-2 ring-[#0B0C10] animate-pulse"></span>
+            )}
+          </button>
+          
+          <AnimatePresence>
+            {isNotifOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute right-0 top-full mt-4 w-80 glass-card bg-[#111218]/95 backdrop-blur-xl border border-white/10 shadow-2xl py-2 overflow-hidden z-50 rounded-2xl"
+              >
+                <div className="px-4 py-2 border-b border-white/5 flex justify-between items-center">
+                  <h3 className="font-semibold text-white">Notifications</h3>
+                  <span className="text-xs bg-white/10 text-white px-2 py-0.5 rounded-full">{notifications.length} new</span>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-muted text-sm">
+                      You're all caught up!
+                    </div>
+                  ) : (
+                    notifications.map((notif, idx) => (
+                      <div key={notif.id + idx} className="px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 cursor-pointer">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-2 h-2 mt-1.5 rounded-full ${notif.type === 'overdue' ? 'bg-danger' : 'bg-warning'}`}></div>
+                          <div>
+                            <p className="text-sm font-medium text-white">{notif.title}</p>
+                            <p className="text-xs text-muted mt-0.5">{notif.message}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         
         <div className="relative" ref={dropdownRef}>
           <button 

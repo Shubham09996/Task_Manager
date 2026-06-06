@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { TaskContext } from '../context/TaskContext';
+import toast from 'react-hot-toast';
 import TaskBoard from '../components/tasks/TaskBoard';
-import { Search, Filter, Plus, X } from 'lucide-react';
+import { Search, Filter, Plus, X, ChevronDown } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 
 const Tasks = () => {
@@ -15,7 +16,8 @@ const Tasks = () => {
     description: '',
     status: 'To do',
     priority: 'Medium',
-    dueDate: ''
+    dueDate: '',
+    dueTime: ''
   });
 
   const [filters, setFilters] = useState({
@@ -41,9 +43,24 @@ const Tasks = () => {
   }, [fetchTasks, filters]);
 
   useEffect(() => {
-    if (searchParams.get('new') === 'true') {
+    let shouldUpdateParams = false;
+    const newParams = new URLSearchParams(searchParams);
+
+    if (newParams.get('new') === 'true') {
       openModal();
-      setSearchParams({});
+      newParams.delete('new');
+      shouldUpdateParams = true;
+    }
+
+    const q = newParams.get('q');
+    if (q) {
+      setFilters(prev => ({ ...prev, search: q }));
+      newParams.delete('q');
+      shouldUpdateParams = true;
+    }
+
+    if (shouldUpdateParams) {
+      setSearchParams(newParams);
     }
   }, [searchParams, setSearchParams]);
 
@@ -68,7 +85,8 @@ const Tasks = () => {
         description: task.description || '',
         status: task.status,
         priority: task.priority,
-        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
+        dueTime: task.dueTime || ''
       });
     } else {
       setEditingTask(null);
@@ -77,7 +95,8 @@ const Tasks = () => {
         description: '',
         status: 'To do',
         priority: 'Medium',
-        dueDate: ''
+        dueDate: '',
+        dueTime: ''
       });
     }
     setIsModalOpen(true);
@@ -96,9 +115,16 @@ const Tasks = () => {
   };
 
   const handleDelete = async () => {
-    if (editingTask && window.confirm('Are you sure you want to delete this task?')) {
-      await deleteTask(editingTask._id);
-      closeModal();
+    if (editingTask) {
+      toast((t) => (
+        <div className="flex flex-col gap-3">
+          <span className="text-white font-medium">Delete this task?</span>
+          <div className="flex gap-2 justify-end mt-1">
+            <button onClick={() => toast.dismiss(t.id)} className="text-muted hover:text-white px-3 py-1 text-sm bg-white/5 rounded transition-colors">Cancel</button>
+            <button onClick={() => { deleteTask(editingTask._id); closeModal(); toast.dismiss(t.id); }} className="bg-danger text-white px-3 py-1 rounded text-sm shadow-lg hover:opacity-90 transition-opacity">Delete</button>
+          </div>
+        </div>
+      ), { duration: 5000, id: `delete-${editingTask._id}` });
     }
   };
 
@@ -128,20 +154,19 @@ const Tasks = () => {
           />
         </div>
 
-        <select 
-          value={filters.priority}
-          onChange={(e) => setFilters({...filters, priority: e.target.value})}
-          className="bg-white/5 border border-white/5 text-white text-sm rounded-full px-4 py-1.5 focus:outline-none appearance-none"
-        >
-          <option value="">All Priorities</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-        
-        <button className="bg-white/5 border border-white/5 text-white text-sm rounded-full px-4 py-1.5 flex items-center gap-2 hover:bg-white/10 transition-colors">
-          <Filter size={14} /> More
-        </button>
+        <div className="relative">
+          <select 
+            value={filters.priority}
+            onChange={(e) => setFilters({...filters, priority: e.target.value})}
+            className="bg-white/5 border border-white/5 text-white text-sm rounded-full pl-4 pr-10 py-1.5 focus:outline-none appearance-none hover:bg-white/10 transition-colors cursor-pointer"
+          >
+            <option className="bg-[#111218] text-white" value="">All Priorities</option>
+            <option className="bg-[#111218] text-white" value="High">High</option>
+            <option className="bg-[#111218] text-white" value="Medium">Medium</option>
+            <option className="bg-[#111218] text-white" value="Low">Low</option>
+          </select>
+          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+        </div>
       </div>
 
       <div className="flex-1 overflow-hidden">
@@ -207,43 +232,56 @@ const Tasks = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="relative">
                   <label className="block text-sm text-muted mb-1">Status</label>
                   <select 
                     value={formData.status}
                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                    className="input-field appearance-none bg-surface"
+                    className="input-field appearance-none bg-surface pr-10 cursor-pointer"
                   >
-                    <option value="Backlog">Backlog</option>
-                    <option value="To do">To do</option>
-                    <option value="In progress">In progress</option>
-                    <option value="In review">In review</option>
-                    <option value="Done">Done</option>
+                    <option className="bg-[#111218] text-white" value="Backlog">Backlog</option>
+                    <option className="bg-[#111218] text-white" value="To do">To do</option>
+                    <option className="bg-[#111218] text-white" value="In progress">In progress</option>
+                    <option className="bg-[#111218] text-white" value="Done">Done</option>
                   </select>
+                  <ChevronDown size={16} className="absolute right-4 top-[38px] text-muted pointer-events-none" />
                 </div>
-                <div>
+                <div className="relative">
                   <label className="block text-sm text-muted mb-1">Priority</label>
                   <select 
                     value={formData.priority}
                     onChange={(e) => setFormData({...formData, priority: e.target.value})}
-                    className="input-field appearance-none bg-surface"
+                    className="input-field appearance-none bg-surface pr-10 cursor-pointer"
                   >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
+                    <option className="bg-[#111218] text-white" value="Low">Low</option>
+                    <option className="bg-[#111218] text-white" value="Medium">Medium</option>
+                    <option className="bg-[#111218] text-white" value="High">High</option>
                   </select>
+                  <ChevronDown size={16} className="absolute right-4 top-[38px] text-muted pointer-events-none" />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm text-muted mb-1">Due Date</label>
-                <input 
-                  type="date" 
-                  value={formData.dueDate}
-                  onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
-                  className="input-field bg-surface text-white"
-                  style={{colorScheme: 'dark'}}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-muted mb-1">Due Date</label>
+                  <input 
+                    type="date" 
+                    value={formData.dueDate}
+                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    className="input-field bg-surface text-white w-full"
+                    style={{colorScheme: 'dark'}}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-muted mb-1">Due Time</label>
+                  <input 
+                    type="time" 
+                    value={formData.dueTime}
+                    onChange={(e) => setFormData({...formData, dueTime: e.target.value})}
+                    className="input-field bg-surface text-white w-full"
+                    style={{colorScheme: 'dark'}}
+                  />
+                </div>
               </div>
 
               <div className="flex justify-between mt-8 pt-4 border-t border-white/10">

@@ -16,6 +16,53 @@ const Dashboard = () => {
   const inProgress = tasks.filter(t => t.status === 'In progress').length;
   const overdue = tasks.filter(t => new Date(t.dueDate) < new Date() && t.status !== 'Done').length;
   
+  // Calculate dynamic Focus Score
+  const focusScore = tasks.length > 0 
+    ? Math.max(0, Math.min(100, Math.round((completed / tasks.length) * 100) - (overdue * 5)))
+    : 100; // 100 if no tasks
+
+  // Calculate dynamic Streak
+  const calculateStreak = () => {
+    const doneTasks = tasks.filter(t => t.status === 'Done').sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+    if (doneTasks.length === 0) return 0;
+
+    const dates = [...new Set(doneTasks.map(t => new Date(t.updatedAt).toDateString()))];
+    let currentStreak = 0;
+    let currentDate = new Date();
+    
+    // Check if task done today
+    if (dates.includes(currentDate.toDateString())) {
+      currentStreak = 1;
+      currentDate.setDate(currentDate.getDate() - 1);
+    } else {
+      // Check yesterday
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (dates.includes(yesterday.toDateString())) {
+        currentStreak = 1;
+        currentDate = yesterday;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        return 0; // Broken streak
+      }
+    }
+
+    while (dates.includes(currentDate.toDateString())) {
+      currentStreak++;
+      currentDate.setDate(currentDate.getDate() - 1);
+    }
+    return currentStreak;
+  };
+
+  const streak = calculateStreak();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   const recentTasks = tasks.slice(0, 5);
 
   if (loading) return <div className="text-white">Loading dashboard...</div>;
@@ -26,17 +73,17 @@ const Dashboard = () => {
         <div className="absolute top-0 right-0 p-4">
           <div className="flex gap-4">
             <div className="bg-white/5 border border-white/10 rounded-full px-4 py-1.5 flex items-center gap-2 text-sm text-white">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              7 days streak
+              <span className={`w-2 h-2 rounded-full ${streak > 0 ? 'bg-primary animate-pulse' : 'bg-muted'}`}></span>
+              {streak} {streak === 1 ? 'day' : 'days'} streak
             </div>
             <div className="bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-sm text-white flex items-center gap-2">
               <span className="text-muted">Focus Score</span> 
-              <span className="font-semibold text-secondary">92</span>
+              <span className={`font-semibold ${focusScore >= 80 ? 'text-success' : focusScore >= 50 ? 'text-secondary' : 'text-danger'}`}>{focusScore}</span>
             </div>
           </div>
         </div>
         
-        <h1 className="text-4xl font-bold text-white mb-3">Good morning, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{user?.name?.split(' ')[0]}</span>.</h1>
+        <h1 className="text-4xl font-bold text-white mb-3">{getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{user?.name?.split(' ')[0]}</span>.</h1>
         <p className="text-muted text-lg">You completed <span className="text-white font-medium">{completed}</span> tasks this week. You have <span className="text-danger font-medium">{overdue}</span> overdue — let's clear those first.</p>
       </div>
 

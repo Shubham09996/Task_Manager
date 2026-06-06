@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { TaskProvider } from './context/TaskContext';
 import Layout from './components/layout/Layout';
@@ -16,6 +17,17 @@ const App = () => {
     <AuthProvider>
       <TaskProvider>
         <Router>
+          <Toaster 
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#111218',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px'
+              }
+            }}
+          />
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />

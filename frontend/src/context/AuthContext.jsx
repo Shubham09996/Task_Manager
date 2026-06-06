@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import api from '../api/api';
+import toast from 'react-hot-toast';
 
 export const AuthContext = createContext();
 
@@ -20,9 +21,12 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.post('/auth/login', { email, password });
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
+      toast.success('Welcome back!');
       return { success: true };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message || 'Login failed' };
+      const msg = error.response?.data?.message || 'Login failed';
+      toast.error(msg);
+      return { success: false, message: msg };
     }
   };
 
@@ -31,15 +35,19 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.post('/auth/register', { name, email, password });
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
+      toast.success('Account created successfully!');
       return { success: true };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message || 'Registration failed' };
+      const msg = error.response?.data?.message || 'Registration failed';
+      toast.error(msg);
+      return { success: false, message: msg };
     }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('userInfo');
+    toast.success('Logged out successfully');
   };
 
   return (
