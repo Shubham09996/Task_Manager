@@ -24,10 +24,10 @@ const Sidebar = () => {
   return (
     <div className="w-64 bg-background border-r border-white/10 h-screen flex flex-col pt-6 pb-4">
       <div className="px-6 mb-8 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center font-bold text-white shadow-lg shadow-primary/20">
-          Q
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#9b6cf8] to-[#c58dfa] flex items-center justify-center font-bold text-white shadow-lg">
+          F
         </div>
-        <span className="text-xl font-semibold tracking-tight text-white">Quantum</span>
+        <span className="text-xl font-semibold tracking-tight text-white">Flow</span>
       </div>
 
       <div className="px-4 mb-4">
