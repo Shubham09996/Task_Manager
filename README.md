@@ -2,6 +2,8 @@
 
 ![Flow Banner](https://img.shields.io/badge/Flow-Task_Manager-8b5cf6?style=for-the-badge&logo=react&logoColor=white)
 
+**🚀 Live Demo:** [https://task-manager-phi-gilt-16.vercel.app](https://task-manager-phi-gilt-16.vercel.app)
+
 Flow is a premium, highly responsive **Task Management Web Application** built on the **MERN Stack** (MongoDB, Express.js, React.js, Node.js). It is designed with modern glassmorphism aesthetics, smooth animations, and advanced functionality like drag-and-drop Kanban boards and interactive data visualization.
 
 ---
@@ -120,7 +122,7 @@ The application will now be running at `http://localhost:5173`.
 
 ## 📂 Project Structure
 
-\`\`\`text
+```text
 Task_Manager/
 ├── backend/
 │   ├── config/        # Database configuration
@@ -141,7 +143,7 @@ Task_Manager/
     │   └── index.css  # Global styles & Tailwind
     ├── package.json
     └── vite.config.js
-\`\`\`
+```
 
 ---
 
